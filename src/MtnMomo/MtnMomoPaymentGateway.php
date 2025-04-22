@@ -21,11 +21,12 @@ class MtnMomoPaymentGateway implements PaymentGatewayInterface
     public function requestPayment($amount, $currency, $payer, $payee)
     {
         $client = new Client();
+        $targetEnvironment = 'sandbox'; // or 'live'
 
         $headers = [
             'Authorization' => 'Bearer' . $this->getAccessToken(),
             'Content-Type' => 'application/json',
-            'X-Target-Environment' => 'sandbox',
+            'X-Target-Environment' => $targetEnvironment,
             'Ocp-Apim-Subscription-Key' => $this->apiKey,
         ];
 
@@ -54,10 +55,23 @@ class MtnMomoPaymentGateway implements PaymentGatewayInterface
 
         return $responseData;
     }
-    
+
     private function getAccessToken()
     {
-        // implement logic to get access token using client credentials flow
+        $environment = 'sandbox'; // or 'live'
+        $baseUrl = ($environment == 'sandbox') ? 'https://sandbox.momodeveloper.mtn.com' : 'https://live.momodeveloper.mtn.com';
+        
+        $client = new Client();
+        $response = $client->post($baseUrl . '/collection/token/', [
+        'headers' => [
+            'Authorization' => 'Basic ' . base64_encode($this->apiKey . ':' . $this->apiSecret),
+            'Ocp-Apim-Subscription-Key' => $this->apiKey,
+        ],
+    ]);
+
+    $responseData = json_decode($response->getBody()->getContents(), true);
+    return $responseData['access_token'];
+
     }
    
 }
