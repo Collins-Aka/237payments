@@ -1,0 +1,26 @@
+{
+   "name": "larrytech/237payments",
+    "description": "Easy payments integration for MTN MOMO, Orange Money and PayPal",
+    "type": "library",
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0 || ^11.0 || 12.2.x-dev"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Larrytech\\237payments\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Larrytech",
+            "email": "clatehlarry@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+
+}
