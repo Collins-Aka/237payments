@@ -4,7 +4,6 @@ namespace Larrytech\Mboapayments\MtnMomo;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-// Ensure the PaymentGatewayInterface is correctly imported or defined
 use Larrytech\Mboapayments\PaymentGatewayInterface;
 
 use Dotenv\Dotenv; // Import Dotenv
