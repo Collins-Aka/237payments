@@ -1,6 +1,6 @@
 <?php
 
-namespace Larrytech\237payments;
+namespace Larrytech\Mboapayments;
 
 interface PaymentGatewayInterface
 {

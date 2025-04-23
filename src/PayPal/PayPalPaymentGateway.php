@@ -1,6 +1,6 @@
 <?php
 
-namespace Larrytech\237payments\PayPal;
+namespace Larrytech\mboapayments\PayPal;
 
 use Larrytech\PaymentGatewayInterface;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Larrytech\237payments\OrangeMoney;
+namespace Larrytech\mboapayments\OrangeMoney;
 
 use Larrytech\PaymentGatewayInterface;
 

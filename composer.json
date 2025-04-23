@@ -1,11 +1,12 @@
 {
-   "name": "larrytech/237payments",
+    "name": "larrytech/mboapayments",
     "description": "Easy payments integration for MTN MOMO, Orange Money and PayPal",
     "type": "library",
     "version": "1.0.0",
     "require": {
         "php": "^8.0",
-      "guzzlehttp/guzzle": "8.0.x-dev"
+        "guzzlehttp/guzzle": "8.0.x-dev",
+        "vlucas/phpdotenv": "5.6.x-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0 || ^11.0 || 12.2.x-dev"
@@ -13,15 +14,14 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Larrytech\\237payments\\": "src/"
+            "Larrytech\\Mboapayments\\": "src/"
         }
     },
     "authors": [
         {
             "name": "Larrytech",
-            "email": "clatehlarry@gmail.com"
+             "email": "clatehlarry@gmail.com"
         }
     ],
     "minimum-stability": "dev"
-
 }

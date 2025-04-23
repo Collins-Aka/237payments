@@ -1,22 +1,30 @@
 <?php
 
-namespace Larrytech\237payments\MtnMomo;
+namespace Larrytech\Mboapayments\MtnMomo;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Larrytech\PaymentGatewayInterface;
+// Ensure the PaymentGatewayInterface is correctly imported or defined
+use Larrytech\Mboapayments\PaymentGatewayInterface;
+
+use Dotenv\Dotenv; // Import Dotenv
+
 
 class MtnMomoPaymentGateway implements PaymentGatewayInterface
 {
-    private $apiKey; // your personal API key
-    private $apiSecret; // secret key given to you by MTN
-    private $baseUrl; // URL of the MTN MoMo API
+    private $apiKey;
+    private $apiSecret;
+    private $baseUrl;
 
-    public function __construct($apiKey, $apiSecret, $baseUrl)
+    public function __construct()
     {
-        $this->apiKey = $apiKey;
-        $this->apiSecret = $apiSecret;
-        $this->baseUrl = $baseUrl; // Fixed typo from $baseurl to $baseUrl
+        // Load environment variables
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../..');
+        $dotenv->load();
+
+        $this->apiKey = $_ENV['API_KEY'];
+        $this->apiSecret = $_ENV['API_SECRET'];
+        $this->baseUrl = $_ENV['BASE_URL'];
     }
 
     public function requestPayment($amount, $currency, $payer, $payee)
@@ -57,6 +65,71 @@ class MtnMomoPaymentGateway implements PaymentGatewayInterface
             return $responseData;
         } catch (RequestException $e) {
             // Added error handling for HTTP requests
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+                'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null,
+            ];
+        }
+    }
+
+    public function verifyPayment($transactionId)
+    {
+        $client = new Client();
+        $targetEnvironment = 'sandbox'; // or 'live'
+
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->getAccessToken(),
+            'Content-Type' => 'application/json',
+            'X-Target-Environment' => $targetEnvironment,
+            'Ocp-Apim-Subscription-Key' => $this->apiKey,
+        ];
+
+        try {
+            $response = $client->get($this->baseUrl . '/collection/v1_0/requesttopay/' . $referenceId, [
+                'headers' => $headers,
+            ]);
+
+            $responseData = json_decode($response->getBody()->getContents(), true);
+            return $responseData;
+        } catch (RequestException $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+                'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null,
+            ];
+        }
+    }
+
+    public function refundPayment($transactionId, $amount, $currency) 
+    {
+        $client = new Client();
+        $targetEnvironment = 'sandbox'; // or 'live'
+
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->getAccessToken(),
+            'Content-Type' => 'application/json',
+            'X-Target-Environment' => $targetEnvironment,
+            'Ocp-Apim-Subscription-Key' => $this->apiKey,
+        ];
+
+        $body = [
+            'amount' => $amount,
+            'currency' => $currency,
+            'externalId' => uniqid(),
+            'payerMessage' => 'Refund request',
+            'payeeNote' => 'Refund request',
+        ];
+
+        try {
+            $response = $client->post($this->baseUrl . '/refund/v1_0/transfer/' . $transactionId, [
+                'headers' => $headers,
+                'json' => $body,
+            ]);
+
+            $responseData = json_decode($response->getBody()->getContents(), true);
+            return $responseData;
+        } catch (RequestException $e) {
             return [
                 'error' => true,
                 'message' => $e->getMessage(),
